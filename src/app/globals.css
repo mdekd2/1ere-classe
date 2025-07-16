@@ -1,0 +1,94 @@
+@import "tailwindcss";
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+  --primary-teal: 20, 184, 166;
+  --primary-blue: 59, 130, 246;
+  --accent-teal: 13, 148, 136;
+  --accent-blue: 37, 99, 235;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  margin: 0;
+  padding: 0;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+  
+  .btn-secondary {
+    @apply bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+  
+  .btn-outline {
+    @apply border-2 border-teal-500 text-teal-500 hover:bg-teal-500 hover:text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+  
+  .card {
+    @apply bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700;
+  }
+  
+  .seat-available {
+    @apply bg-teal-100 hover:bg-teal-200 border-teal-300 text-teal-800 cursor-pointer transition-colors duration-200;
+  }
+  
+  .seat-selected {
+    @apply bg-teal-500 text-white border-teal-600 cursor-pointer;
+  }
+  
+  .seat-reserved {
+    @apply bg-gray-300 text-gray-600 border-gray-400 cursor-not-allowed;
+  }
+}
+
+/* Custom styles for the homepage */
+.homepage-bg {
+  background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%);
+  min-height: 100vh;
+}
+
+.nav-dark {
+  background-color: #1f2937;
+  color: white;
+}
+
+.nav-dark a {
+  color: white;
+}
+
+.nav-dark a:hover {
+  color: #2dd4bf;
+}
+
+.nav-dark button {
+  color: white;
+}
+
+.nav-dark button:hover {
+  color: #2dd4bf;
+}

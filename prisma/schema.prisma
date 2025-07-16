@@ -1,0 +1,208 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  firstName String
+  lastName  String
+  email     String   @unique
+  phone     String
+  password  String
+  role      UserRole @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  reservations Reservation[]
+  reviews      Review[]
+  notifications Notification[]
+
+  @@map("users")
+}
+
+model Bus {
+  id       String @id @default(cuid())
+  name     String
+  capacity Int
+  rows     Int
+  columns  Int
+  amenities String[] // Array of amenities
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  trips Trip[]
+
+  @@map("buses")
+}
+
+model Route {
+  id                String @id @default(cuid())
+  from              String
+  to                String
+  distance          Int    // in kilometers
+  estimatedDuration Int    // in hours
+  price             Int    // in MRU
+  isActive          Boolean @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  trips Trip[]
+
+  @@map("routes")
+}
+
+model Trip {
+  id            String      @id @default(cuid())
+  busId         String
+  routeId       String
+  departureTime DateTime
+  arrivalTime   DateTime
+  price         Int
+  availableSeats Int
+  status        TripStatus  @default(SCHEDULED)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // Relations
+  bus          Bus         @relation(fields: [busId], references: [id])
+  route        Route       @relation(fields: [routeId], references: [id])
+  reservations Reservation[]
+  reviews      Review[]
+  tripStatuses TripStatusUpdate[]
+
+  @@map("trips")
+}
+
+model Reservation {
+  id             String           @id @default(cuid())
+  tripId         String
+  userId         String
+  seatNumber     String
+  passengerName  String
+  passengerEmail String
+  passengerPhone String
+  status         ReservationStatus @default(PENDING)
+  totalPrice     Int
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  // Relations
+  trip    Trip    @relation(fields: [tripId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+  payment Payment?
+
+  @@map("reservations")
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  reservationId String        @unique
+  amount        Int
+  method        PaymentMethod
+  status        PaymentStatus @default(PENDING)
+  transactionId String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Relations
+  reservation Reservation @relation(fields: [reservationId], references: [id])
+
+  @@map("payments")
+}
+
+model TripStatusUpdate {
+  id        String      @id @default(cuid())
+  tripId    String
+  status    TripStatus
+  message   String?
+  createdAt DateTime    @default(now())
+
+  // Relations
+  trip Trip @relation(fields: [tripId], references: [id])
+
+  @@map("trip_status_updates")
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  tripId    String
+  userId    String
+  rating    Int      // 1-5 stars
+  comment   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  trip Trip @relation(fields: [tripId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("reviews")
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  type      NotificationType
+  isRead    Boolean          @default(false)
+  relatedId String?          // ID of related trip, reservation, etc.
+  createdAt DateTime         @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("notifications")
+}
+
+// Enums
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum TripStatus {
+  SCHEDULED
+  DEPARTED
+  ARRIVED
+  CANCELLED
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  PAID
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  MOBILE_MONEY
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+}
