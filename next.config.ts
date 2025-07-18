@@ -17,8 +17,7 @@ const nextConfig = {
   // Mobile optimizations
   compress: true,
   poweredByHeader: false,
-  reactStrictMode: true,
-  swcMinify: true
+  reactStrictMode: true
 };
 
 export default withNextIntl(nextConfig);
