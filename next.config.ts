@@ -13,7 +13,12 @@ const nextConfig = {
   },
   typescript: {
     ignoreBuildErrors: true
-  }
+  },
+  // Mobile optimizations
+  compress: true,
+  poweredByHeader: false,
+  reactStrictMode: true,
+  swcMinify: true
 };
 
 export default withNextIntl(nextConfig);

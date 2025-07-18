@@ -140,9 +140,10 @@ export default function Navigation() {
             {/* Mobile menu button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-white hover:text-teal-400 transition-colors"
+              className="md:hidden p-3 text-white hover:text-teal-400 transition-colors rounded-lg hover:bg-gray-700 min-h-[44px] min-w-[44px] flex items-center justify-center"
+              aria-label="Toggle menu"
             >
-              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>

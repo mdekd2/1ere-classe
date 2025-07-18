@@ -10,11 +10,26 @@ export const metadata: Metadata = {
   description: "Voyagez confortablement en Mauritanie avec 1ere Classe.",
   keywords: "bus, réservation, Mauritanie, transport",
   authors: [{ name: "1ere Classe Team" }],
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#0d9488" },
+    { media: "(prefers-color-scheme: dark)", color: "#0f172a" }
+  ],
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "1ere Classe"
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({
