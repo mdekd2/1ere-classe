@@ -3,7 +3,6 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const withNextIntl = createNextIntlPlugin();
 
 const nextConfig = {
-  output: 'export' as const,
   trailingSlash: true,
   images: {
     unoptimized: true
@@ -17,7 +16,15 @@ const nextConfig = {
   // Mobile optimizations
   compress: true,
   poweredByHeader: false,
-  reactStrictMode: true
+  reactStrictMode: true,
+  // Explicitly disable static export
+  experimental: {
+    serverComponentsExternalPackages: []
+  },
+  // Force server-side rendering
+  output: undefined, // Explicitly not 'export'
+  // Ensure dynamic rendering
+  staticPageGenerationTimeout: 0
 };
 
 export default withNextIntl(nextConfig);

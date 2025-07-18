@@ -6,9 +6,10 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "build:deploy": "DISABLE_ESLINT_PLUGIN=true next build",
+    "build:netlify": "next build",
+    "build:force-dynamic": "NEXT_EXPORT=false next build",
     "start": "next start",
     "lint": "next lint",
-    "export": "next build && next export",
     "deploy": "npm run build"
   },
   "dependencies": {

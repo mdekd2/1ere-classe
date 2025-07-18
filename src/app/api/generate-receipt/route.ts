@@ -1,9 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import jsPDF from 'jspdf';
-import crypto from 'crypto';
+import { NextRequest, NextResponse } from 'next/server'
+import { generateReceiptPDF } from '@/lib/receiptGenerator'
 
-// Secret key for signing receipts (should be stored in environment variables)
-const RECEIPT_SECRET_KEY = process.env.RECEIPT_SECRET_KEY || 'your-secret-key-here';
+export const dynamic = 'force-dynamic'
 
 export async function POST(req: NextRequest) {
   try {

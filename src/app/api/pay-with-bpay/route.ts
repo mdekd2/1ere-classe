@@ -1,6 +1,8 @@
 // app/api/pay-with-bpay/route.ts
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic'
+
 export async function POST(req: Request) {
   try {
     const { amount, phone, bookingId } = await req.json();

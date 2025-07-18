@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { mockReservations, mockTrips } from '@/lib/mock-data'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: NextRequest) {
   try {
     // In a real app, you would get the user from the JWT token
