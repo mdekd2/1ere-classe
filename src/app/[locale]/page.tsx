@@ -20,6 +20,7 @@ import {
   Zap
 } from 'lucide-react'
 import Navigation from '@/components/Navigation'
+import TripSearch from '@/components/TripSearch'
 import { useTranslations, useLocale } from 'next-intl'
 
 export default function HomePage() {
@@ -56,8 +57,24 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Locations Section */}
+      {/* Trip Search Section */}
       <div className="relative z-10 bg-white dark:bg-gray-900 py-12 sm:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
+              {t('hero.searchPlaceholder')}
+            </h2>
+            <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 px-4">
+              {t('searchSubtitle')}
+            </p>
+          </div>
+          
+          <TripSearch className="max-w-4xl mx-auto" />
+        </div>
+      </div>
+
+      {/* Locations Section */}
+      <div className="relative z-10 bg-gray-50 dark:bg-gray-800 py-12 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">

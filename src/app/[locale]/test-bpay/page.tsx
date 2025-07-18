@@ -82,7 +82,7 @@ export default function TestBPayPage() {
             <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
               <li>• Entrez un numéro de téléphone valide</li>
               <li>• Le montant sera envoyé à BPay</li>
-              <li>• Vous serez redirigé vers l'interface BPay</li>
+              <li>• Vous serez redirigé vers l&apos;interface BPay</li>
               <li>• Vérifiez les logs pour les callbacks</li>
             </ul>
           </div>

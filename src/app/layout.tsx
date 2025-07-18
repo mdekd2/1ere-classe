@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import Providers from './providers';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -9,7 +10,11 @@ export const metadata: Metadata = {
   description: "Voyagez confortablement en Mauritanie avec 1ere Classe.",
   keywords: "bus, réservation, Mauritanie, transport",
   authors: [{ name: "1ere Classe Team" }],
-  viewport: "width=device-width, initial-scale=1",
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -20,7 +25,9 @@ export default function RootLayout({
   return (
     <html lang="fr" className="h-full" dir="ltr">
       <body className={`${inter.className} h-full bg-gray-50 dark:bg-gray-900`}>
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Bus, Eye, EyeOff, User, Mail, Phone, Lock } from 'lucide-react'
 import { useAuth } from '@/lib/auth-context'
-import { useTranslations, useLocale } from 'next-intl'
 
 export const dynamic = 'force-dynamic'
 
@@ -24,9 +23,6 @@ export default function RegisterPage() {
   const [error, setError] = useState('')
   const router = useRouter()
   const { register } = useAuth()
-  const t = useTranslations('auth.register')
-  const tCommon = useTranslations('common')
-  const locale = useLocale()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -43,13 +39,13 @@ export default function RegisterPage() {
 
     // Validation
     if (formData.password !== formData.confirmPassword) {
-      setError(t('passwordMismatch'))
+      setError('Passwords do not match')
       setIsLoading(false)
       return
     }
 
     if (formData.password.length < 6) {
-      setError(t('passwordTooShort'))
+      setError('Password must be at least 6 characters long')
       setIsLoading(false)
       return
     }
@@ -63,10 +59,9 @@ export default function RegisterPage() {
         password: formData.password
       })
       // Redirect to home page after successful registration
-      router.push(`/${locale}`)
+      router.push('/')
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : tCommon('error')
-      setError(errorMessage)
+      setError(error instanceof Error ? error.message : 'Registration failed')
     } finally {
       setIsLoading(false)
     }
@@ -83,7 +78,7 @@ export default function RegisterPage() {
             </div>
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">1ere Classe</h1>
-          <p className="text-teal-200">{t('subtitle')}</p>
+          <p className="text-teal-200">Create your account</p>
         </div>
 
         {/* Registration Form */}
@@ -92,7 +87,7 @@ export default function RegisterPage() {
             {/* First Name */}
             <div>
               <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
-                {t('firstName')}
+                First Name
               </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -103,7 +98,7 @@ export default function RegisterPage() {
                   value={formData.firstName}
                   onChange={handleChange}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors"
-                  placeholder={t('firstName')}
+                  placeholder="Enter your first name"
                   required
                 />
               </div>
@@ -112,7 +107,7 @@ export default function RegisterPage() {
             {/* Last Name */}
             <div>
               <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
-                {t('lastName')}
+                Last Name
               </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -123,7 +118,7 @@ export default function RegisterPage() {
                   value={formData.lastName}
                   onChange={handleChange}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors"
-                  placeholder={t('lastName')}
+                  placeholder="Enter your last name"
                   required
                 />
               </div>
@@ -132,7 +127,7 @@ export default function RegisterPage() {
             {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                {t('email')}
+                Email Address
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -143,7 +138,7 @@ export default function RegisterPage() {
                   value={formData.email}
                   onChange={handleChange}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors"
-                  placeholder={t('email')}
+                  placeholder="Enter your email"
                   required
                 />
               </div>
@@ -152,7 +147,7 @@ export default function RegisterPage() {
             {/* Phone */}
             <div>
               <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                {t('phone')}
+                Phone Number
               </label>
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -163,7 +158,7 @@ export default function RegisterPage() {
                   value={formData.phone}
                   onChange={handleChange}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors"
-                  placeholder={t('phone')}
+                  placeholder="Enter your phone number"
                   required
                 />
               </div>
@@ -172,7 +167,7 @@ export default function RegisterPage() {
             {/* Password */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                {t('password')}
+                Password
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -183,7 +178,7 @@ export default function RegisterPage() {
                   value={formData.password}
                   onChange={handleChange}
                   className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors"
-                  placeholder={t('password')}
+                  placeholder="Create a password"
                   required
                 />
                 <button
@@ -199,7 +194,7 @@ export default function RegisterPage() {
             {/* Confirm Password */}
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
-                {t('confirmPassword')}
+                Confirm Password
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -210,7 +205,7 @@ export default function RegisterPage() {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors"
-                  placeholder={t('confirmPassword')}
+                  placeholder="Confirm your password"
                   required
                 />
                 <button
@@ -235,19 +230,19 @@ export default function RegisterPage() {
               disabled={isLoading}
               className="w-full bg-teal-500 hover:bg-teal-600 disabled:bg-teal-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
             >
-              {isLoading ? tCommon('loading') : t('title')}
+              {isLoading ? 'Creating Account...' : 'Create Account'}
             </button>
           </form>
 
           {/* Login Link */}
           <div className="mt-6 text-center">
             <p className="text-gray-600 text-sm">
-              {t('alreadyAccount')}{' '}
+              Already have an account?{' '}
               <Link 
-                href={`/${locale}/login`}
+                href="/login" 
                 className="text-teal-600 hover:text-teal-700 font-medium transition-colors"
               >
-                {t('signIn')}
+                Sign in here
               </Link>
             </p>
           </div>
@@ -255,10 +250,10 @@ export default function RegisterPage() {
           {/* Back to Home */}
           <div className="mt-4 text-center">
             <Link 
-              href={`/${locale}`}
+              href="/" 
               className="text-teal-600 hover:text-teal-700 text-sm font-medium transition-colors"
             >
-              ← {tCommon('back')} {tCommon('to')} {tCommon('home')}
+              ← Back to Home
             </Link>
           </div>
         </div>

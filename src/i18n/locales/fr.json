@@ -50,6 +50,7 @@
       "cta": "Réserver maintenant",
       "searchPlaceholder": "Où voulez-vous aller ?"
     },
+    "searchSubtitle": "Trouvez et réservez votre voyage en quelques clics",
     "features": {
       "title": "Pourquoi choisir 1ere Classe ?",
       "comfort": {
@@ -148,7 +149,8 @@
     "moreAmenities": "plus",
     "perPassenger": "par passager",
     "selectSeats": "Sélectionner les places",
-    "viewDetails": "Voir les détails"
+    "viewDetails": "Voir les détails",
+    "viewAll": "Voir tout"
   },
   "trip": {
     "details": "Détails du voyage",
@@ -162,7 +164,8 @@
     "amenities": "Équipements",
     "selectSeats": "Sélectionner les places",
     "continue": "Continuer",
-    "bookNow": "Réserver maintenant"
+    "bookNow": "Réserver maintenant",
+    "viewDetails": "Voir les détails"
   },
   "booking": {
     "title": "Réservation",
@@ -197,7 +200,32 @@
     "seat": "Place",
     "viewDetails": "Voir les détails",
     "downloadTicket": "Télécharger le billet",
-    "cancelBooking": "Annuler la réservation"
+    "cancelBooking": "Annuler la réservation",
+    "totalBookings": "Total des réservations",
+    "paid": "Payées",
+    "confirmed": "Confirmées",
+    "totalSpent": "Total dépensé"
+  },
+  "account": {
+    "title": "Mon compte",
+    "subtitle": "Gérez votre profil et consultez vos réservations",
+    "profileInformation": "Informations du profil",
+    "firstName": "Prénom",
+    "lastName": "Nom de famille",
+    "emailAddress": "Adresse e-mail",
+    "phoneNumber": "Numéro de téléphone",
+    "username": "Nom d'utilisateur",
+    "memberSince": "Membre depuis",
+    "quickStats": "Statistiques rapides",
+    "totalBookings": "Total des réservations",
+    "activeBookings": "Réservations actives",
+    "totalSpent": "Total dépensé",
+    "quickActions": "Actions rapides",
+    "bookNewTrip": "Réserver un nouveau voyage",
+    "viewMyBookings": "Voir mes réservations",
+    "recentBookings": "Réservations récentes",
+    "noBookingsYet": "Vous n'avez pas encore de réservations",
+    "bookFirstTrip": "Réserver votre premier voyage"
   },
   "payment": {
     "title": "Paiement",

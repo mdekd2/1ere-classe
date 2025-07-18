@@ -31,7 +31,7 @@ interface RegisterData {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Mock users database
-let mockUsers = [
+const mockUsers = [
   { 
     id: '1',
     username: 'admin',

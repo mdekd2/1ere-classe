@@ -33,7 +33,7 @@ interface TripFormData {
   arrivalTime: string
   price: number
   availableSeats: number
-  status: 'scheduled' | 'cancelled' | 'completed'
+  status: 'scheduled' | 'departed' | 'arrived' | 'cancelled'
 }
 
 interface BusFormData {
@@ -844,7 +844,7 @@ export default function AdminPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Duration (min)</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Duration (hours)</label>
                   <input
                     type="number"
                     value={routeFormData.estimatedDuration}

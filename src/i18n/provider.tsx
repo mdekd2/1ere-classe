@@ -7,7 +7,7 @@ import { Locale } from './config'
 interface I18nProviderProps {
   children: ReactNode
   locale: Locale
-  messages: Record<string, any>
+  messages: Record<string, unknown>
 }
 
 export function I18nProvider({ children, locale, messages }: I18nProviderProps) {

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
+import { useBookings } from '@/lib/booking-context'
 import { useTranslations, useLocale } from 'next-intl'
 import { 
   User, 
@@ -17,11 +18,13 @@ import Navigation from '@/components/Navigation'
 import BPayButton from '@/components/BPayButton'
 import { mockTrips } from '@/lib/mock-data'
 import { formatDate, formatTime, formatPrice } from '@/lib/utils'
+import { Trip } from '@/lib/types'
 
 export default function BookingPage() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const { user } = useAuth()
+  const { addBooking } = useBookings()
   const locale = useLocale()
   const t = useTranslations('booking')
   const tCommon = useTranslations('common')
@@ -31,9 +34,9 @@ export default function BookingPage() {
   const seatsParam = searchParams.get('seats')
   const selectedSeats = seatsParam ? seatsParam.split(',') : []
   
-  const [trip, setTrip] = useState<Record<string, unknown> | null>(null)
+  const [trip, setTrip] = useState<Trip | null>(null)
   const [passengerInfo, setPassengerInfo] = useState({
-    name: user?.name || '',
+    name: user?.firstName ? `${user.firstName} ${user.lastName}` : '',
     email: user?.email || '',
     phone: user?.phone || ''
   })
@@ -76,20 +79,59 @@ export default function BookingPage() {
   }
 
   const handleBooking = async () => {
-    if (!trip || selectedSeats.length === 0) return
+    if (!trip || selectedSeats.length === 0 || !user) return
 
     setIsProcessing(true)
     setMessage('')
-    // Simuler la création de réservation
-    const newBookingId = `booking-${Date.now()}`
-    setBookingId(newBookingId)
-    setTimeout(() => {
+    
+    try {
+      // Create booking data
+      const bookingData = {
+        tripId: tripId!,
+        userId: user.id,
+        seatNumber: selectedSeats.join(', '),
+        passengerName: passengerInfo.name,
+        passengerEmail: passengerInfo.email,
+        passengerPhone: passengerInfo.phone,
+        status: 'confirmed' as const,
+        totalPrice: calculateTotal(),
+        trip: trip
+      }
+
+      // Add booking to context
+      addBooking(bookingData)
+      
+      const newBookingId = `booking-${Date.now()}`
+      setBookingId(newBookingId)
+      
+      setTimeout(() => {
+        setIsProcessing(false)
+        setBookingComplete(true)
+      }, 2000)
+    } catch (error) {
+      console.error('Booking error:', error)
+      setMessage('Booking failed. Please try again.')
       setIsProcessing(false)
-      setBookingComplete(true)
-    }, 2000)
+    }
   }
 
   const handleBPaySuccess = () => {
+    // Create booking when BPay payment is successful
+    if (!trip || selectedSeats.length === 0 || !user) return
+
+    const bookingData = {
+      tripId: tripId!,
+      userId: user.id,
+      seatNumber: selectedSeats.join(', '),
+      passengerName: passengerInfo.name,
+      passengerEmail: passengerInfo.email,
+      passengerPhone: passengerInfo.phone,
+      status: 'paid' as const,
+      totalPrice: calculateTotal(),
+      trip: trip
+    }
+
+    addBooking(bookingData)
     setMessage(tPayment('success'))
   }
 
@@ -318,9 +360,9 @@ export default function BookingPage() {
                     phone={passengerInfo.phone}
                     bookingId={bookingId || `booking-${Date.now()}`}
                     tripDetails={{
-                      from: trip.route?.from,
-                      to: trip.route?.to,
-                      departureDate: trip.departureTime ? formatDate(trip.departureTime) : '',
+                      from: trip.route?.from || '',
+                      to: trip.route?.to || '',
+                      departureDate: trip.departureTime ? formatDate(trip.departureTime) : '', 
                       departureTime: trip.departureTime ? formatTime(trip.departureTime) : ''
                     }}
                     passengerInfo={{

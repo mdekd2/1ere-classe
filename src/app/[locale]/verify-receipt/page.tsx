@@ -6,6 +6,25 @@ import { useTranslations } from 'next-intl'
 import { CheckCircle, XCircle, Search, FileText } from 'lucide-react'
 import Navigation from '@/components/Navigation'
 
+interface VerificationResult {
+  valid: boolean;
+  error?: string;
+  receipt?: {
+    bookingId: string;
+    tripDetails: {
+      from: string;
+      to: string;
+    };
+    passengerInfo: {
+      name: string;
+    };
+    paymentInfo: {
+      amount: number;
+    };
+  };
+  verifiedAt?: string;
+}
+
 export default function VerifyReceiptPage() {
   const searchParams = useSearchParams()
   const t = useTranslations('receipt')
@@ -13,7 +32,7 @@ export default function VerifyReceiptPage() {
   
   const [signature, setSignature] = useState(searchParams.get('signature') || '')
   const [bookingId, setBookingId] = useState(searchParams.get('bookingId') || '')
-  const [verificationResult, setVerificationResult] = useState<any>(null)
+  const [verificationResult, setVerificationResult] = useState<VerificationResult | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
   const handleVerification = async () => {
@@ -43,10 +62,10 @@ export default function VerifyReceiptPage() {
           <div className="text-center mb-6">
             <FileText className="w-12 h-12 text-teal-500 mx-auto mb-4" />
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Vérifier l'Authenticité du Reçu
+              Vérifier l&apos;Authenticité du Reçu
             </h1>
-            <p className="text-gray-600 dark:text-gray-300 mt-2">
-              Entrez la signature du reçu pour vérifier son authenticité
+            <p className="text-gray-600 dark:text-gray-300">
+              Enter the receipt&apos;s signature to verify its authenticity
             </p>
           </div>
 
@@ -133,7 +152,7 @@ export default function VerifyReceiptPage() {
                         Reçu Invalide
                       </h3>
                       <p className="text-red-700 dark:text-red-300">
-                        {verificationResult.error || 'Ce reçu n\'est pas authentique ou a été modifié.'}
+                        {verificationResult.error || 'Ce reçu n&apos;est pas authentique ou a été modifié.'}
                       </p>
                     </div>
                   </div>

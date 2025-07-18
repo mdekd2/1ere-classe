@@ -19,7 +19,7 @@ export const mockUsers: User[] = [
   },
 ]
 
-export let mockBuses: Bus[] = [
+export const mockBuses: Bus[] = [
   {
     id: '1',
     name: 'Toyota Hiace 1',
@@ -43,10 +43,22 @@ export let mockBuses: Bus[] = [
     },
     amenities: ['AC', 'WiFi', 'USB Charging'],
     isActive: true,
+  },
+  {
+    id: '3',
+    name: 'Toyota Hiace 3',
+    capacity: 14,
+    layout: {
+      rows: 4,
+      columns: 5,
+      seatMap: Array(4).fill(null).map(() => Array(5).fill('available')),
+    },
+    amenities: ['AC', 'WiFi', 'USB Charging', 'Reclining Seats'],
+    isActive: true,
   }
 ]
 
-export let mockRoutes: Route[] = [
+export const mockRoutes: Route[] = [
   {
     id: '1',
     from: 'Nouakchott',
@@ -58,31 +70,47 @@ export let mockRoutes: Route[] = [
   },
   {
     id: '2',
-    from: 'Nouakchott',
-    to: 'Rosso',
-    distance: 200,
-    estimatedDuration: 3,
-    price: 1200,
-    isActive: true,
-  },
-  {
-    id: '3',
     from: 'Nouadhibou',
     to: 'Nouakchott',
     distance: 470,
     estimatedDuration: 6,
     price: 2500,
     isActive: true,
+  },
+  {
+    id: '3',
+    from: 'Nouakchott',
+    to: 'Rosso',
+    distance: 200,
+    estimatedDuration: 3,
+    price: 1200,
+    isActive: true,
   }
 ]
 
-export let mockTrips: Trip[] = [
+// Helper function to create today's date with specific time
+function createTodayWithTime(hours: number, minutes: number = 0): Date {
+  const today = new Date()
+  today.setHours(hours, minutes, 0, 0)
+  return today
+}
+
+// Helper function to create tomorrow's date with specific time
+function createTomorrowWithTime(hours: number, minutes: number = 0): Date {
+  const tomorrow = new Date()
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  tomorrow.setHours(hours, minutes, 0, 0)
+  return tomorrow
+}
+
+export const mockTrips: Trip[] = [
+  // Morning trips from Nouakchott to Nouadhibou
   {
     id: '1',
     busId: '1',
     routeId: '1',
-    departureTime: new Date(Date.now() + 1000 * 60 * 60 * 2), // 2 hours from now
-    arrivalTime: new Date(Date.now() + 1000 * 60 * 60 * 8), // 8 hours from now
+    departureTime: createTodayWithTime(7, 0), // 7:00 AM
+    arrivalTime: createTodayWithTime(13, 0), // 1:00 PM (6 hours later)
     price: 2500,
     availableSeats: 14,
     status: 'scheduled',
@@ -92,18 +120,117 @@ export let mockTrips: Trip[] = [
   {
     id: '2',
     busId: '2',
+    routeId: '1',
+    departureTime: createTodayWithTime(7, 30), // 7:30 AM
+    arrivalTime: createTodayWithTime(13, 30), // 1:30 PM (6 hours later)
+    price: 2500,
+    availableSeats: 14,
+    status: 'scheduled',
+    bus: mockBuses[1],
+    route: mockRoutes[0],
+  },
+  {
+    id: '3',
+    busId: '3',
+    routeId: '1',
+    departureTime: createTodayWithTime(8, 0), // 8:00 AM
+    arrivalTime: createTodayWithTime(14, 0), // 2:00 PM (6 hours later)
+    price: 2500,
+    availableSeats: 14,
+    status: 'scheduled',
+    bus: mockBuses[2],
+    route: mockRoutes[0],
+  },
+  // Morning trips from Nouadhibou to Nouakchott
+  {
+    id: '4',
+    busId: '1',
     routeId: '2',
+    departureTime: createTodayWithTime(7, 0), // 7:00 AM
+    arrivalTime: createTodayWithTime(13, 0), // 1:00 PM (6 hours later)
+    price: 2500,
+    availableSeats: 14,
+    status: 'scheduled',
+    bus: mockBuses[0],
+    route: mockRoutes[1],
+  },
+  {
+    id: '5',
+    busId: '2',
+    routeId: '2',
+    departureTime: createTodayWithTime(7, 30), // 7:30 AM
+    arrivalTime: createTodayWithTime(13, 30), // 1:30 PM (6 hours later)
+    price: 2500,
+    availableSeats: 14,
+    status: 'scheduled',
+    bus: mockBuses[1],
+    route: mockRoutes[1],
+  },
+  {
+    id: '6',
+    busId: '3',
+    routeId: '2',
+    departureTime: createTodayWithTime(8, 0), // 8:00 AM
+    arrivalTime: createTodayWithTime(14, 0), // 2:00 PM (6 hours later)
+    price: 2500,
+    availableSeats: 14,
+    status: 'scheduled',
+    bus: mockBuses[2],
+    route: mockRoutes[1],
+  },
+  // Tomorrow's trips
+  {
+    id: '7',
+    busId: '1',
+    routeId: '1',
+    departureTime: createTomorrowWithTime(7, 0), // 7:00 AM tomorrow
+    arrivalTime: createTomorrowWithTime(13, 0), // 1:00 PM tomorrow
+    price: 2500,
+    availableSeats: 14,
+    status: 'scheduled',
+    bus: mockBuses[0],
+    route: mockRoutes[0],
+  },
+  {
+    id: '8',
+    busId: '2',
+    routeId: '1',
+    departureTime: createTomorrowWithTime(7, 30), // 7:30 AM tomorrow
+    arrivalTime: createTomorrowWithTime(13, 30), // 1:30 PM tomorrow
+    price: 2500,
+    availableSeats: 14,
+    status: 'scheduled',
+    bus: mockBuses[1],
+    route: mockRoutes[0],
+  },
+  {
+    id: '9',
+    busId: '3',
+    routeId: '1',
+    departureTime: createTomorrowWithTime(8, 0), // 8:00 AM tomorrow
+    arrivalTime: createTomorrowWithTime(14, 0), // 2:00 PM tomorrow
+    price: 2500,
+    availableSeats: 14,
+    status: 'scheduled',
+    bus: mockBuses[2],
+    route: mockRoutes[0],
+  },
+  // Additional route example
+  {
+    id: '10',
+    busId: '1',
+    routeId: '3',
     departureTime: new Date(Date.now() + 1000 * 60 * 60 * 4), // 4 hours from now
     arrivalTime: new Date(Date.now() + 1000 * 60 * 60 * 7), // 7 hours from now
     price: 1200,
     availableSeats: 14,
     status: 'scheduled',
-    bus: mockBuses[1],
-    route: mockRoutes[1],
+    bus: mockBuses[0],
+    route: mockRoutes[2],
   }
 ]
 
-export let mockReservations: Reservation[] = []
+export const mockReservations: Reservation[] = []
 
 // Functions to add new data
 export function addBus(busData: Omit<Bus, 'id'>): Bus {

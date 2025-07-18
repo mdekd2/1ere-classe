@@ -47,6 +47,7 @@
       "cta": "احجز الآن",
       "searchPlaceholder": "إلى أين تريد الذهاب؟"
     },
+    "searchSubtitle": "ابحث واحجز رحلتك بنقرات قليلة",
     "features": {
       "title": "لماذا تختار الدرجة الأولى؟",
       "comfort": {
@@ -124,17 +125,17 @@
     }
   },
   "search": {
-    "title": "البحث عن رحلات",
+    "title": "البحث عن الرحلات",
     "subtitle": "ابحث واحجز رحلتك المثالية",
     "from": "من",
     "to": "إلى",
     "date": "التاريخ",
     "passengers": "الركاب",
-    "search": "بحث",
+    "search": "البحث",
     "filters": "المرشحات",
     "clearFilters": "مسح المرشحات",
     "noResults": "لم يتم العثور على رحلات",
-    "tryAdjusting": "حاول تعديل مرشحات البحث الخاصة بك",
+    "tryAdjusting": "حاول تعديل مرشحات البحث",
     "results": "رحلة تم العثور عليها",
     "departure": "المغادرة",
     "arrival": "الوصول",
@@ -143,9 +144,10 @@
     "seatsAvailable": "مقاعد متاحة",
     "amenities": "المرافق",
     "moreAmenities": "المزيد",
-    "perPassenger": "لكل راكب",
+    "perPassenger": "للكل راكب",
     "selectSeats": "اختر المقاعد",
-    "viewDetails": "عرض التفاصيل"
+    "viewDetails": "عرض التفاصيل",
+    "viewAll": "عرض الكل"
   },
   "trip": {
     "details": "تفاصيل الرحلة",
@@ -159,7 +161,8 @@
     "amenities": "المرافق",
     "selectSeats": "اختر المقاعد",
     "continue": "متابعة",
-    "bookNow": "احجز الآن"
+    "bookNow": "احجز الآن",
+    "viewDetails": "عرض التفاصيل"
   },
   "booking": {
     "title": "الحجز",
@@ -194,7 +197,32 @@
     "seat": "المقعد",
     "viewDetails": "عرض التفاصيل",
     "downloadTicket": "تحميل التذكرة",
-    "cancelBooking": "إلغاء الحجز"
+    "cancelBooking": "إلغاء الحجز",
+    "totalBookings": "إجمالي الحجوزات",
+    "paid": "مدفوع",
+    "confirmed": "مؤكد",
+    "totalSpent": "إجمالي الإنفاق"
+  },
+  "account": {
+    "title": "حسابي",
+    "subtitle": "إدارة ملفك الشخصي وعرض حجوزاتك",
+    "profileInformation": "معلومات الملف الشخصي",
+    "firstName": "الاسم الأول",
+    "lastName": "اسم العائلة",
+    "emailAddress": "عنوان البريد الإلكتروني",
+    "phoneNumber": "رقم الهاتف",
+    "username": "اسم المستخدم",
+    "memberSince": "عضو منذ",
+    "quickStats": "إحصائيات سريعة",
+    "totalBookings": "إجمالي الحجوزات",
+    "activeBookings": "الحجوزات النشطة",
+    "totalSpent": "إجمالي الإنفاق",
+    "quickActions": "الإجراءات السريعة",
+    "bookNewTrip": "احجز رحلة جديدة",
+    "viewMyBookings": "عرض حجوزاتي",
+    "recentBookings": "الحجوزات الحديثة",
+    "noBookingsYet": "ليس لديك حجوزات بعد",
+    "bookFirstTrip": "احجز رحلتك الأولى"
   },
   "payment": {
     "title": "الدفع",

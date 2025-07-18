@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { getMessages } from '@/i18n/server';
-import { locales, defaultLocale, rtlLocales, Locale } from '@/i18n/config';
+import { locales, defaultLocale, Locale } from '@/i18n/config';
 import '../globals.css';
 import Providers from './providers';
 
@@ -18,13 +18,14 @@ export default async function LocaleLayout({
   params,
 }: {
   children: ReactNode;
-  params: { locale: Locale };
+  params: Promise<{ locale: Locale }>;
 }) {
-  const locale = locales.includes(params.locale) ? params.locale : defaultLocale;
-  const messages = await getMessages(locale);
+  const { locale } = await params;
+  const validLocale = locales.includes(locale) ? locale : defaultLocale;
+  const messages = await getMessages(validLocale);
 
   return (
-    <Providers locale={locale} messages={messages}>
+    <Providers locale={validLocale} messages={messages}>
       {children}
     </Providers>
   );

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/lib/auth-context'
+import { useBookings } from '@/lib/booking-context'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { 
@@ -19,88 +20,34 @@ import {
 import Navigation from '@/components/Navigation'
 import TripStatusTracker from '@/components/TripStatusTracker'
 import ReviewsSection from '@/components/ReviewsSection'
-import { mockTrips, mockReservations } from '@/lib/mock-data'
+import { mockTrips } from '@/lib/mock-data'
 import { formatDate, formatTime, formatPrice } from '@/lib/utils'
 import { Trip, Review } from '@/lib/types'
 import { useLocale } from 'next-intl'
 
 export default function DashboardPage() {
   const { user } = useAuth()
+  const { userBookings, getUserStats } = useBookings()
   const router = useRouter()
   const locale = useLocale()
   const [activeTrips, setActiveTrips] = useState<Trip[]>([])
-  const [recentBookings, setRecentBookings] = useState<any[]>([])
+  const [loading, setLoading] = useState(true);
   const [reviews, setReviews] = useState<Review[]>([])
-  const [stats, setStats] = useState({
-    totalBookings: 0,
-    totalSpent: 0,
-    averageRating: 0,
-    upcomingTrips: 0
-  })
 
   useEffect(() => {
-    if (!user) {
-      router.push(`/${locale}/login`)
-      return
-    }
-
-    // Get user's bookings
-    const userBookings = mockReservations.filter(r => 
-      r.passengerEmail === user.email
-    )
-
-    // Get upcoming trips
-    const upcoming = mockTrips.filter(trip => 
-      new Date(trip.departureTime) > new Date() && 
-      userBookings.some(booking => booking.tripId === trip.id)
-    )
-
-    // Mock reviews
-    const mockReviews: Review[] = [
-      {
-        id: '1',
-        tripId: 'trip-1',
-        userId: user.id,
-        rating: 5,
-        comment: 'Excellent service! The bus was clean and the driver was very professional. Highly recommended!',
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2), // 2 days ago
-        user
-      },
-      {
-        id: '2',
-        tripId: 'trip-2',
-        userId: user.id,
-        rating: 4,
-        comment: 'Good trip overall. Comfortable seats and on-time departure. Would travel again.',
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5), // 5 days ago
-        user
-      }
-    ]
-
-    setActiveTrips(upcoming)
-    setRecentBookings(userBookings.slice(0, 5))
-    setReviews(mockReviews)
-
-    // Calculate stats
-    const totalSpent = userBookings.reduce((sum, booking) => sum + booking.totalPrice, 0)
-    const averageRating = mockReviews.length > 0 
-      ? mockReviews.reduce((sum, review) => sum + review.rating, 0) / mockReviews.length 
-      : 0
-
-    setStats({
-      totalBookings: userBookings.length,
-      totalSpent,
-      averageRating,
-      upcomingTrips: upcoming.length
-    })
-  }, [user, router])
+    // Simulate loading
+    const timer = setTimeout(() => {
+      setLoading(false)
+    }, 500)
+    return () => clearTimeout(timer)
+  }, [])
 
   const handleAddReview = (reviewData: Omit<Review, 'id' | 'createdAt'>) => {
     const newReview: Review = {
       ...reviewData,
       id: Date.now().toString(),
       createdAt: new Date(),
-      user
+      user: user ? { ...user, name: user.firstName + ' ' + user.lastName } : undefined
     }
     setReviews(prev => [newReview, ...prev])
   }
@@ -108,6 +55,10 @@ export default function DashboardPage() {
   if (!user) {
     return null
   }
+
+  // Get stats from booking context
+  const stats = getUserStats()
+  const recentBookings = userBookings.slice(0, 5)
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -120,7 +71,7 @@ export default function DashboardPage() {
             Welcome back, {user.firstName}!
           </h1>
           <p className="text-gray-600 dark:text-gray-300">
-            Here's what's happening with your trips and bookings
+            Here&apos;s what&apos;s happening with your trips and bookings
           </p>
         </div>
 
@@ -142,7 +93,7 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Total Spent</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatPrice(stats.totalSpent)}</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatPrice(stats.totalRevenue)}</p>
               </div>
               <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
                 <DollarSign className="w-6 h-6 text-green-600 dark:text-green-400" />
@@ -165,87 +116,72 @@ export default function DashboardPage() {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Upcoming Trips</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.upcomingTrips}</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Active Trips</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{activeTrips.length}</p>
               </div>
-              <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/20 rounded-lg flex items-center justify-center">
-                <Calendar className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-purple-600 dark:text-purple-400" />
               </div>
             </div>
           </div>
         </div>
 
+        {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Active Trips */}
+          {/* Recent Bookings */}
           <div className="lg:col-span-2">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  Active Trips
+                  Recent Bookings
                 </h2>
                 <Link
-                  href={`/${locale}/search`}
-                  className="flex items-center space-x-2 text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 transition-colors"
+                  href={`/${locale}/bookings`}
+                  className="text-teal-600 hover:text-teal-700 text-sm font-medium transition-colors"
                 >
-                  <span>Book New Trip</span>
-                  <Plus className="w-4 h-4" />
+                  View All
                 </Link>
               </div>
-
-              {activeTrips.length === 0 ? (
+              
+              {loading ? (
+                <div className="space-y-4">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="animate-pulse">
+                      <div className="h-16 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+                    </div>
+                  ))}
+                </div>
+              ) : recentBookings.length === 0 ? (
                 <div className="text-center py-8">
                   <Bus className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600 dark:text-gray-300 mb-4">
-                    No active trips. Book your next journey!
-                  </p>
+                  <p className="text-gray-500 dark:text-gray-400 mb-4">No bookings yet</p>
                   <Link
                     href={`/${locale}/search`}
-                    className="inline-flex items-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition-colors"
+                    className="inline-flex items-center space-x-2 bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg transition-colors"
                   >
-                    <span>Search Trips</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <Plus className="w-4 h-4" />
+                    <span>Book Your First Trip</span>
                   </Link>
                 </div>
               ) : (
-                <div className="space-y-6">
-                  {activeTrips.map((trip) => (
-                    <TripStatusTracker key={trip.id} trip={trip} />
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Recent Bookings */}
-          <div className="space-y-6">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
-                Recent Bookings
-              </h2>
-              
-              {recentBookings.length === 0 ? (
-                <p className="text-gray-600 dark:text-gray-300 text-center py-4">
-                  No recent bookings
-                </p>
-              ) : (
                 <div className="space-y-4">
                   {recentBookings.map((booking) => (
-                    <div key={booking.id} className="border-b border-gray-200 dark:border-gray-700 pb-4 last:border-b-0">
+                    <div key={booking.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center space-x-2">
-                          <MapPin className="w-4 h-4 text-teal-600" />
-                          <span className="font-medium text-gray-900 dark:text-white">
-                            {booking.trip?.route?.from} → {booking.trip?.route?.to}
-                          </span>
-                        </div>
-                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                        <h3 className="font-medium text-gray-900 dark:text-white">
+                          {booking.passengerName}
+                        </h3>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                           booking.status === 'confirmed' ? 'bg-green-100 text-green-800' :
-                          booking.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-red-100 text-red-800'
+                          booking.status === 'paid' ? 'bg-blue-100 text-blue-800' :
+                          'bg-yellow-100 text-yellow-800'
                         }`}>
                           {booking.status}
                         </span>
                       </div>
+                      <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                        {booking.trip?.route?.from} → {booking.trip?.route?.to}
+                      </p>
                       <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-300">
                         <div className="flex items-center space-x-4">
                           <span className="flex items-center space-x-1">
@@ -278,7 +214,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Quick Actions */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <div className="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
                 Quick Actions
               </h2>

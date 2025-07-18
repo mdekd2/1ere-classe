@@ -1,33 +1,22 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { 
-  Calendar, 
-  MapPin, 
-  Clock, 
-  Bus, 
-  Users,
-  Search,
-  Filter,
-  Download,
-  Eye
-} from 'lucide-react'
-import Navigation from '@/components/Navigation'
-import { useTranslations } from 'next-intl'
+import { Bus, Users, MapPin, Clock, CreditCard, Eye, Search, Filter, Calendar, Download } from 'lucide-react'
+import { useAuth } from '@/lib/auth-context'
 import { useBookings } from '@/lib/booking-context'
 import { formatDate, formatTime, formatPrice, formatDuration, getStatusColor } from '@/lib/utils'
+import Navigation from '@/components/Navigation'
+import { mockReservations } from '@/lib/mock-data'
 import { Reservation } from '@/lib/types'
 
+export const dynamic = 'force-dynamic'
+
 export default function BookingsPage() {
-  const t = useTranslations('bookings')
-  const tCommon = useTranslations('common')
-  const tStatus = useTranslations('status')
-  const { userBookings } = useBookings()
-  
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
-  const [filteredReservations, setFilteredReservations] = useState<Reservation[]>(userBookings)
+  const [filteredReservations, setFilteredReservations] = useState<Reservation[]>(mockReservations)
 
   const handleSearch = (term: string) => {
     setSearchTerm(term)
@@ -40,7 +29,7 @@ export default function BookingsPage() {
   }
 
   const filterReservations = (search: string, status: string) => {
-    let filtered = userBookings
+    let filtered = mockReservations
 
     if (search) {
       filtered = filtered.filter(reservation =>
@@ -58,11 +47,6 @@ export default function BookingsPage() {
     setFilteredReservations(filtered)
   }
 
-  // Update filtered reservations when userBookings changes
-  useEffect(() => {
-    filterReservations(searchTerm, statusFilter)
-  }, [userBookings, searchTerm, statusFilter])
-
   const getStatusBadge = (status: string) => {
     return (
       <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(status)}`}>
@@ -79,10 +63,10 @@ export default function BookingsPage() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            {t('title')}
+            My Bookings
           </h1>
           <p className="text-gray-600 dark:text-gray-300">
-            {t('subtitle')}
+            View and manage your bus reservations
           </p>
         </div>
 
@@ -94,7 +78,7 @@ export default function BookingsPage() {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type="text"
-                  placeholder={t('searchPlaceholder')}
+                  placeholder="Search by destination, passenger name, or seat number..."
                   value={searchTerm}
                   onChange={(e) => handleSearch(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
@@ -109,11 +93,11 @@ export default function BookingsPage() {
                   onChange={(e) => handleStatusFilter(e.target.value)}
                   className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 >
-                  <option value="all">{t('allStatus')}</option>
-                  <option value="pending">{tStatus('pending')}</option>
-                  <option value="confirmed">{tStatus('confirmed')}</option>
-                  <option value="paid">{tStatus('paid')}</option>
-                  <option value="cancelled">{tStatus('cancelled')}</option>
+                  <option value="all">All Status</option>
+                  <option value="pending">Pending</option>
+                  <option value="confirmed">Confirmed</option>
+                  <option value="paid">Paid</option>
+                  <option value="cancelled">Cancelled</option>
                 </select>
               </div>
             </div>
@@ -126,17 +110,17 @@ export default function BookingsPage() {
             <div className="card text-center py-12">
               <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                {t('noBookings')}
+                No bookings found
               </h3>
               <p className="text-gray-600 dark:text-gray-300 mb-4">
                 {searchTerm || statusFilter !== 'all' 
-                  ? t('tryAdjusting')
-                  : t('noBookingsYet')
+                  ? 'Try adjusting your search filters.'
+                  : 'You haven\'t made any bookings yet.'
                 }
               </p>
               {!searchTerm && statusFilter === 'all' && (
                 <Link href="/search" className="btn-primary">
-                  {t('bookFirstTrip')}
+                  Book Your First Trip
                 </Link>
               )}
             </div>
@@ -167,17 +151,17 @@ export default function BookingsPage() {
                       <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-300">
                         <div className="flex items-center space-x-1">
                           <Calendar className="w-4 h-4" />
-                          <span>{reservation.trip?.departureTime ? formatDate(reservation.trip.departureTime) : 'N/A'}</span>
+                          <span>{formatDate(reservation.trip?.departureTime || new Date())}</span>
                         </div>
                         <div className="flex items-center space-x-1">
                           <Clock className="w-4 h-4" />
-                          <span>{reservation.trip?.departureTime ? formatTime(reservation.trip.departureTime) : 'N/A'}</span>
+                          <span>{formatTime(reservation.trip?.departureTime || new Date())}</span>
                         </div>
                       </div>
 
                       <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-300">
-                        <span>{t('duration')}: {formatDuration(reservation.trip?.route?.estimatedDuration || 0)}</span>
-                        <span>{t('seat')}: {reservation.seatNumber}</span>
+                        <span>Duration: {formatDuration(reservation.trip?.route?.estimatedDuration || 0)}</span>
+                        <span>Seat: {reservation.seatNumber}</span>
                       </div>
                     </div>
                   </div>
@@ -185,20 +169,20 @@ export default function BookingsPage() {
                   {/* Passenger Information */}
                   <div className="lg:col-span-1">
                     <h4 className="font-semibold text-gray-900 dark:text-white mb-3">
-                      {t('passengerDetails')}
+                      Passenger Details
                     </h4>
                     <div className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
                       <div>
-                        <span className="font-medium">{t('name')}:</span> {reservation.passengerName}
+                        <span className="font-medium">Name:</span> {reservation.passengerName}
                       </div>
                       <div>
-                        <span className="font-medium">{t('email')}:</span> {reservation.passengerEmail}
+                        <span className="font-medium">Email:</span> {reservation.passengerEmail}
                       </div>
                       <div>
-                        <span className="font-medium">{t('phone')}:</span> {reservation.passengerPhone}
+                        <span className="font-medium">Phone:</span> {reservation.passengerPhone}
                       </div>
                       <div>
-                        <span className="font-medium">{t('booked')}:</span> {reservation.createdAt ? formatDate(reservation.createdAt) : 'N/A'}
+                        <span className="font-medium">Booked:</span> {formatDate(reservation.createdAt)}
                       </div>
                     </div>
                   </div>
@@ -209,18 +193,19 @@ export default function BookingsPage() {
                       <div className="text-2xl font-bold text-green-600 mb-2">
                         {formatPrice(reservation.totalPrice)}
                       </div>
+                      <div className="text-sm text-gray-600 dark:text-gray-300">
+                        Total paid
+                      </div>
                     </div>
-                    <div className="flex flex-col space-y-2">
-                      <button className="flex items-center justify-center space-x-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                    
+                    <div className="space-y-2 mt-4">
+                      <button className="w-full btn-outline text-sm flex items-center justify-center space-x-2">
                         <Eye className="w-4 h-4" />
-                        <span>{t('viewDetails')}</span>
+                        <span>View Details</span>
                       </button>
-                      <button className="flex items-center justify-center space-x-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors">
+                      <button className="w-full btn-secondary text-sm flex items-center justify-center space-x-2">
                         <Download className="w-4 h-4" />
-                        <span>{t('downloadTicket')}</span>
-                      </button>
-                      <button className="flex items-center justify-center space-x-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors">
-                        <span>{t('cancelBooking')}</span>
+                        <span>Download Ticket</span>
                       </button>
                     </div>
                   </div>
@@ -238,7 +223,7 @@ export default function BookingsPage() {
                 {filteredReservations.length}
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-300">
-                {t('totalBookings')}
+                Total Bookings
               </div>
             </div>
             <div className="card text-center">
@@ -246,7 +231,7 @@ export default function BookingsPage() {
                 {filteredReservations.filter(r => r.status === 'paid').length}
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-300">
-                {t('paid')}
+                Paid
               </div>
             </div>
             <div className="card text-center">
@@ -254,7 +239,7 @@ export default function BookingsPage() {
                 {filteredReservations.filter(r => r.status === 'confirmed').length}
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-300">
-                {t('confirmed')}
+                Confirmed
               </div>
             </div>
             <div className="card text-center">
@@ -262,7 +247,7 @@ export default function BookingsPage() {
                 {formatPrice(filteredReservations.reduce((sum, r) => sum + r.totalPrice, 0))}
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-300">
-                {t('totalSpent')}
+                Total Spent
               </div>
             </div>
           </div>

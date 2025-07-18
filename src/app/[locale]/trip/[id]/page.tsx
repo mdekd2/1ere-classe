@@ -20,6 +20,7 @@ import SeatMap from '@/components/SeatMap'
 import { useTranslations } from 'next-intl'
 import { mockTrips, mockBuses, parseSeatNumber } from '@/lib/mock-data'
 import { formatDate, formatTime, formatPrice } from '@/lib/utils'
+import { Trip, Bus as BusType } from '@/lib/types'
 
 export default function TripDetailPage() {
   const params = useParams()
@@ -31,15 +32,15 @@ export default function TripDetailPage() {
   const tBooking = useTranslations('booking')
   
   const [selectedSeats, setSelectedSeats] = useState<string[]>([])
-  const [trip, setTrip] = useState<any>(null)
-  const [bus, setBus] = useState<any>(null)
+  const [trip, setTrip] = useState<Trip | null>(null)
+  const [bus, setBus] = useState<BusType | null>(null)
 
   useEffect(() => {
     const foundTrip = mockTrips.find(t => t.id === tripId)
     if (foundTrip) {
       setTrip(foundTrip)
       const foundBus = mockBuses.find(b => b.id === foundTrip.busId)
-      setBus(foundBus)
+      setBus(foundBus || null)
     }
   }, [tripId])
 
@@ -118,7 +119,7 @@ export default function TripDetailPage() {
               <div className="flex items-center mb-4">
                 <MapPin className="w-5 h-5 text-teal-500 mr-2" />
                 <span className="text-lg text-gray-900 dark:text-white">
-                  {trip.from} → {trip.to}
+                  {trip.route?.from} → {trip.route?.to}
                 </span>
               </div>
 
@@ -148,11 +149,11 @@ export default function TripDetailPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-300">{t('duration')}</p>
-                  <p className="font-semibold text-gray-900 dark:text-white">{trip.duration}h</p>
+                  <p className="font-semibold text-gray-900 dark:text-white">{trip.route?.estimatedDuration}h</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-300">{t('distance')}</p>
-                  <p className="font-semibold text-gray-900 dark:text-white">{trip.distance} km</p>
+                  <p className="font-semibold text-gray-900 dark:text-white">{trip.route?.distance} km</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-300">{t('availableSeats')}</p>
